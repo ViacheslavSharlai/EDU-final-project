@@ -1,0 +1,21 @@
+---
+- name: Install Nginx to all groups
+  hosts: all
+  become: true
+  roles:
+  - role: install_nginx
+    tags: nginx
+
+- name: Install PHP-FPM to all groups
+  hosts: all
+  become: true
+  roles:
+  - role: install_fpm
+    tags: fpm
+
+- name: Install PMA to back group
+  hosts: tag_name_back
+  become: true
+  roles:
+  - role: install_pma
+    tags: pma
