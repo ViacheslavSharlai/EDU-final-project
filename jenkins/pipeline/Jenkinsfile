@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    
+    stages {
+        
+        stage('Terraform') {
+
+            agent {
+                dockerfile {
+                    filename 'Dockerfile'
+                    dir 'jenkins/terraform-slave'
+                    args "-v $WORKSPACE:/var/git --env-file $HOME/creds.env ${env.TERRAFORM_EXTRA_FLAGS}"
+                }
+            }
+            
+            steps {
+                sh "cd /var/git/terraform/blue && terraform init && terraform ${env.ACTION} -auto-approve -var color=${env.COLOR}"
+            }
+            
+        }
+
+        stage('Ansible') {
+
+            agent {
+                dockerfile {
+                    filename 'Dockerfile'
+                    dir 'jenkins/ansible-slave'
+                    args "-u 0:0 -v $WORKSPACE:/var/git --env-file $HOME/creds.env ${env.ANSIBLE_EXTRA_FLAGS}"
+                }
+            }
+
+            steps {
+                sh 'sleep 20'
+                sh 'chmod 400 /var/git/terraform/blue/ec2-rsa.pem'
+                sh 'cd /var/git/ansible && ansible-playbook playbook.yml'
+            }
+            
+        }
+
+        
+    }
+}
+
