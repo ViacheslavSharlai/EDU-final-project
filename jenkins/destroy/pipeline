@@ -1,0 +1,15 @@
+pipeline {
+    agent none
+
+    stages {
+        stage ('delete terraform') {
+        agent {
+            label 'node'
+        }
+        steps {
+            sh 'cd /home/ubuntu/final/terraform && terraform destroy -auto-approve -var color=${color}'
+            sh 'cd /home/ubuntu/ && rm -rf final'
+            }
+        }
+    }
+}

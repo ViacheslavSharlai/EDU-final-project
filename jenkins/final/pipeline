@@ -1,0 +1,33 @@
+pipeline {
+    agent none
+
+    stages {
+        stage ('clone git') {
+        agent {
+            label 'node'
+        }
+        steps {
+            sh 'cd /home/ubuntu && git clone https://github.com/ViacheslavSharlai/final.git'
+            }
+        }
+
+        stage ('terraform') {
+        agent {
+            label 'node'
+        }
+        steps {
+            sh 'cd /home/ubuntu/final/terraform && terraform init && terraform apply -auto-approve -var color=${color}'
+            }
+        }
+
+        stage ('Ansible') {
+        agent {
+            label 'node'
+        }
+        steps {
+            sh 'cd /home/ubuntu/final/ansible && sudo chmod 400 secret_key.pem'
+            sh 'cd /home/ubuntu/final/ansible && ansible-playbook -i aws_ec2.yml playbook.yml'
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+pipeline {
+    agent none
+
+    stages {
+        stage ('change') {
+        agent {
+            label 'node'
+        }
+        steps {
+            sh 'cd /home/ubuntu/final/terraform && terraform init && terraform apply -auto-approve -var color=${color}'
+            }
+        }
+    }
+}
