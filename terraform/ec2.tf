@@ -24,7 +24,7 @@ resource "aws_instance" "back_instance_green" {
   }
 }
 
-# Create RDS instance
+# Shared DB
 
 resource "aws_db_instance" "default" {
   db_subnet_group_name   = aws_db_subnet_group.db.id
