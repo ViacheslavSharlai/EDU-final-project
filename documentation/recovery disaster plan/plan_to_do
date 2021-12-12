@@ -1,0 +1,43 @@
+At the first stage, we need to create an instance for the Jenkins master node in any available resource.
+In our infrastructure, we use the resources of an external cloud provider.
+
+By clicking on this link, you can see a step-by-step instruction with dependencies of what you need to do to install Jenkins:
+jenkins.io/doc/book/installing/linux/
+
+After that, you need to create a slave named "node".
+example here: - https://dzone.com/articles/jenkins-03-configure-master-and-slave
+
+On this server, you need to configure the environment for the correct operation of all services and successful deployment:
+
+- apt update
+- apt install software-properties-common -y
+- apt-add-repository ppa:ansible/ansible
+- apt update
+- curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+- sudo apt-add-repository "deb [arch=$(dpkg --print-architecture)] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+- sudo apt install terraform
+- apt install awscli -y
+- apt install ansible -y
+- apt install git -y
+- ansible-galaxy collection install amazon.aws
+- apt install python3-boto3 -y
+- apt install python3-pip
+- apt-get -y install python3-distutils
+
+Some steps may change over time, but the main points remain.
+
+After that, it is necessary to create an aws profile on the server with the correct parameters.
+
+- $ aws configure
+AWS Access Key ID [None]: accesskey
+AWS Secret Access Key [None]: secretkey
+Default region name [None]: eu-central-1
+Default output format [None]: json
+
+
+After setting up the environment, you need to create a job in Jenkins for deployment.
+
+The pipeline code can be taken from the git repository:
+https://github.com/ViacheslavSharlai/final/tree/main/jenkins
+
+When creating the main task, you must make a choice of parameters by color (key - color, values: green/blue)

@@ -1,0 +1,28 @@
+This project is an example of an infrastructure consisting of the following blocks:
+
+a) blue/green deployment using terraform
+b) deployment of infrastructure and services using ansible
+c) all of the above items are triggered by pipleline in jenkins
+
+
+A more detailed description of each item is given below.
+
+a) This infrastructure will be deployed in aws and cloudflare provider.
+Terraform deploys two application load balancers. Each of which has its own parameter (blue or green).
+More information about the technology of blue-green deployment can be found here: https://en.wikipedia.org/wiki/Blue-green_deployment
+Behind each of the balancers there is an auto scaling group of servers consisting of two permanent servers that ensure trouble-free operation.
+In addition, there is a server on which phpmyadmin is installed and configured to connect to the database server, about which below.
+All of the above servers are present in the same quantity in different availability zones and are located behind each of the balancers.
+Also in the project there is a shared database server, which is in a single instance, only servers with phpmyadmin installed have access to it,
+and it is available for both servers from the green or blue branch.
+In addition, during the deployment phase, a domain record is created in cloudflare.
+There is also a function for switching the branch that responds to a request (green or blue), which changes the dns record for the provider.
+The database server is created in RDS. The configuration of the connection to the DB instance is performed using aws cli and jinja template which are included in the role.
+
+b) After the completion of the unfolding of the terraform, ansible enters the process.
+At this stage, thanks to the dynamic inventory and tags that terraform installed, ansible installs the nginx and php-fpm roles on all servers.
+Phpmyadmin is installed on a server that is not autoscaling. The configuration of the connection to the DB instance is performed using aws cli and jinja template which are included in the role.
+
+с) At this stage, there are 2 servers located outside our project. First - master node, second - slave node of jenkins.
+On master node, we set up the connection to the slave. On the slave, we set up the environment for the correct operation of all previous services.
+After we have configured our instances, we create three jobs. The first is responsible for terraform and ansible, the second does the switching of branches, the third removes everything.

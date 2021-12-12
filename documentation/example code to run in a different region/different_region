@@ -1,0 +1,5 @@
+In order to deploy the code in another region, you need to change the current region in the terraform code to the required one.
+
+It is also necessary to change the default region on the slave node Jenkins.
+
+In the current directory, the code for deploying to eu-west-2 has been prepared.
