@@ -22,14 +22,6 @@ variable "bucket-name" {
   default     = "arn:aws:s3:::vsharlai-bucket"
 }
 
-variable "AMI" {
-  type = map(any)
-
-  default = {
-    eu-central-1 = "ami-047e03b8591f2d48a"
-  }
-}
-
 variable "instance-type" {
 
   type        = string
